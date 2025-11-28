@@ -13,7 +13,7 @@ El chatbot permite seleccionar distintos perfiles, cada uno adaptando el estilo 
 - 🎦 Animador
 - 💻 Programador
 - 🌈 Shaders / Technical Artist
-- 📖 Narrador
+- 📖 Narrador  
 Cada personalidad añade contexto único gracias al sistema interno de "prompting".
 
 ### Exportación de conversaciones a PDF
@@ -24,7 +24,7 @@ Puedes subir archivos de tipo:
 - .txt
 - .pdf
 - .doc
-- .docx
+- .docx    
 El bot detecta el tipo y procesa el contenido en caso de ser texto plano.
 
 ### Modelos de IA usados
