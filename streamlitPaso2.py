@@ -142,7 +142,7 @@ with st.sidebar:
     )
 
     st.markdown("### Temperatura")
-    temperatura = st.slider("", min_value=0.0, max_value=1.0, step=0.1, value=0.7)
+    temperatura = st.slider("", min_value=0.0, max_value=1.0, step=0.1, value=0.5)
 
     st.markdown("### Modelo Utilizado")
     modelo = st.selectbox(
@@ -346,3 +346,4 @@ if mensaje_usuario:
     st.session_state.bloqueo_input = False
 
     st.rerun()
+
