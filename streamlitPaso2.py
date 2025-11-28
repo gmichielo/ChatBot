@@ -116,8 +116,18 @@ with col2:
 
 st.markdown(
     """
-    <h1 style='text-align: center; color: #29B6F6;'>Drakonius AI 🐲</h1>
-    <p style='text-align: center; font-size: 18px; color: #4FC3F7;'>IA de Drakonius Studios para desarrollo de videojuegos</p>
+    <h1 style="
+        text-align: center;
+        color: #29B6F6;
+        font-size: 60px;
+        font-weight: bold;
+        text-shadow: 0px 0px 20px #7dcfff;
+    ">
+        Drakonius AI 🐲
+    </h1>
+    <p style='text-align: center; font-size: 18px; color: #4FC3F7;'>
+        IA de Drakonius Studios para desarrollo de videojuegos
+    </p>
     """,
     unsafe_allow_html=True
 )
@@ -346,4 +356,5 @@ if mensaje_usuario:
     st.session_state.bloqueo_input = False
 
     st.rerun()
+
 
