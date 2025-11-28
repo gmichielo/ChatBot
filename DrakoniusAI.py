@@ -9,7 +9,7 @@ import mimetypes
 LOGO_MAIN = "images/logo_title.png"
 LOGO_ICON = "images/logo_icon.png"
 
-perfiles_personalidad = [
+profiles_personalitys = [
             "Generalista",
             "Rigger",
             "Animador",
@@ -18,28 +18,76 @@ perfiles_personalidad = [
             "Narrador",
             ]
 
-modelos_IA = [
+models_IA = [
             "gemini-2.5-flash",
             "gemini-2.5-flash-preview-09-2025",
             "gemini-2.5-flash-lite",
             "gemini-2.5-pro",
             ]
 
-def aplicar_personalidad(texto):
-    perfiles = {
-        "Generalista": "Responde de forma equilibrada y versátil, como una IA general que puede explicar, ayudar o proponer ideas: ",
-        "Rigger": "Responde como un experto en rigging para videojuegos. Habla de articulaciones, pesos, controladores, constraints, deformadores y pipelines de animación. Explica con detalle técnico: ",
-        "Animador": "Responde como un animador profesional de videojuegos. Comenta temas como curvas, timing, spacing, posing, acting, squash & stretch, ciclos y retargeting. Explica con emoción y precisión: ",
-        "Programador": "Responde como un programador experto en Unity y desarrollo de videojuegos. Usa términos técnicos claros, menciona patrones, optimización, arquitectura y ejemplos de código cuando sea útil: ",
-        "Shaders": "Responde como un artista técnico especialista en shaders. Explica también nodos de Shader Graph, HLSL, iluminación, materiales, VFX y optimización gráfica: ",
-        "Narrador": "Responde como un escritor de narrativa para videojuegos: enfócate en construcción de mundo, tono, personajes, diálogos, desarrollo emocional, ritmo y estructuras narrativas: "
+emojis = {
+    "Generalista": "🐲🐉",
+    "Rigger": "🐲🚻",
+    "Animador": "🐲🎦",
+    "Programador": "🐲💻",
+    "Shaders": "🐲🌈",
+    "Narrador": "🐲📖"
+}
+
+def apply_personality(text):
+    profiles = {
+        "Generalista": (
+            "Responde de forma equilibrada, versátil y clara, "
+            "como una IA general capaz de explicar, analizar o proponer ideas cuando sea útil. "
+            "Puedes responder cualquier tipo de pregunta: "
+        ),
+
+        "Rigger": (
+            "Responde como un experto en rigging para videojuegos. "
+            "Tu especialidad son articulaciones, pesos, controladores, constraints, deformadores y pipelines de animación. "
+            "Si la pregunta NO está relacionada con rigging, indícalo explícitamente con una frase como "
+            "'Esto no pertenece directamente al rigging, pero puedo ayudarte desde un punto de vista general:'. "
+            "Luego responde de manera útil si es posible: "
+        ),
+
+        "Animador": (
+            "Responde como un animador profesional de videojuegos. "
+            "Tu dominio incluye curvas, timing, spacing, posing, acting, squash & stretch, ciclos y retargeting. "
+            "Si la pregunta NO pertenece al ámbito de la animación, primero acláralo con una frase como "
+            "'Esta pregunta no es propiamente de animación, pero puedo orientarte:'. "
+            "Después ofrece la mejor respuesta posible: "
+        ),
+
+        "Programador": (
+            "Responde como un programador experto en Unity y desarrollo de videojuegos. "
+            "Manejas patrones, optimización, arquitectura, scripting y ejemplos de código. "
+            "Si la pregunta NO corresponde a programación, indícalo de forma clara con "
+            "'Este tema no entra dentro de programación, pero intentaré ayudarte:'. "
+            "Luego responde de manera general si es posible: "
+        ),
+
+        "Shaders": (
+            "Responde como un artista técnico especializado en shaders. "
+            "Tu enfoque incluye Shader Graph, HLSL, iluminación, materiales, efectos visuales y optimización gráfica. "
+            "Si la pregunta NO está relacionada con shaders o gráficos, advierte primero con "
+            "'Esto no forma parte del área de shaders, pero puedo darte una orientación:'. "
+            "Después responde lo mejor que puedas: "
+        ),
+
+        "Narrador": (
+            "Responde como un escritor de narrativa para videojuegos. "
+            "Tu dominio incluye construcción de mundo, personajes, diálogos, tono, ritmo y estructura narrativa. "
+            "Si la pregunta NO pertenece a narrativa, aclara primero con una frase como "
+            "'Este tema no pertenece a narrativa, pero puedo orientarte de manera general:'. "
+            "Luego ofrece una respuesta útil: "
+        )
     }
-    return perfiles.get(personalidad, "") + texto
+
+    return profiles.get(personality, "") + text
 
 ### Configuracion principal pagina
 st.set_page_config(page_title="Drakonius AI", page_icon=LOGO_ICON, layout="wide")
 st.logo(LOGO_MAIN, icon_image=LOGO_ICON)
-
 
 ### Estilo / apartado grafico
 st.markdown(
@@ -51,7 +99,7 @@ st.markdown(
 
     /* Animacion burbujas */
     .bubble-animate {
-        animation: fadeIn 0.1s ease-in-out;
+        animation: fadeIn 0.2s ease-in-out;
     }
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(8px); }
@@ -149,18 +197,18 @@ st.markdown(
 with st.sidebar:
 
     st.markdown("### Perfil de la IA")
-    personalidad = st.selectbox(
+    personality = st.selectbox(
         "",
-        perfiles_personalidad,
+        profiles_personalitys,
     )
 
-    st.markdown("### Temperatura")
-    temperatura = st.slider("", min_value=0.0, max_value=1.0, step=0.1, value=0.5)
+    st.markdown("### temperatures")
+    temperatures = st.slider("", min_value=0.0, max_value=1.0, step=0.1, value=0.5)
 
     st.markdown("### Modelo Utilizado")
     modelo = st.selectbox(
         "",
-        modelos_IA,
+        models_IA,
         index=0,
     )
 
@@ -216,18 +264,18 @@ with st.sidebar:
                 )
 
 ### Modelo
-chat_model = ChatGoogleGenerativeAI(model=modelo, temperature=temperatura)
+chat_model = ChatGoogleGenerativeAI(model=modelo, temperature=temperatures)
 
 ### Estados de la sesion
 if "chat_model" not in st.session_state:
-    st.session_state.chat_model = ChatGoogleGenerativeAI(model=modelo, temperature=temperatura)
+    st.session_state.chat_model = ChatGoogleGenerativeAI(model=modelo, temperature=temperatures)
     st.session_state.chat_model_modelo = modelo
-    st.session_state.chat_model_temp = temperatura
+    st.session_state.chat_model_temp = temperatures
 else:
-    if st.session_state.chat_model_modelo != modelo or st.session_state.chat_model_temp != temperatura:
-        st.session_state.chat_model = ChatGoogleGenerativeAI(model=modelo, temperature=temperatura)
+    if st.session_state.chat_model_modelo != modelo or st.session_state.chat_model_temp != temperatures:
+        st.session_state.chat_model = ChatGoogleGenerativeAI(model=modelo, temperature=temperatures)
         st.session_state.chat_model_modelo = modelo
-        st.session_state.chat_model_temp = temperatura
+        st.session_state.chat_model_temp = temperatures
 
 if "mensajes" not in st.session_state:
     st.session_state.mensajes = []
@@ -236,10 +284,10 @@ if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = 0
 
 if "archivo_procesado" not in st.session_state:
-    st.session_state.archivo_procesado = False
+    st.session_state.processed_file = False
 
 if "bloqueo_input" not in st.session_state:
-    st.session_state.bloqueo_input = False
+    st.session_state.block_input = False
 
 
 ### Chat / Historial
@@ -249,7 +297,12 @@ chat_area = st.container()
 with chat_area:
     for msg in st.session_state.mensajes:
         role = "assistant" if isinstance(msg, AIMessage) else "user"
-        icon = "🐲" if role == "assistant" else "👤"
+
+        if role == "assistant":
+            personalidad_msg = msg.meta.get("personalidad", personality)
+            icon = emojis.get(personalidad_msg, "🐲")
+        else:
+            icon = "👤"
         bubble_class = "bot-bubble" if role == "assistant" else "user-bubble"
 
         st.markdown(
@@ -264,14 +317,14 @@ input_area = st.container()
 with input_area:
     col_input, col_files = st.columns([4, 1])
 
-    mensaje_usuario = None
-    archivo = None
+    user_message = None
+    archive = None
 
     ### Columna izquierda: chat input con adjuntar archivos
     with col_input:
         chat_data = st.chat_input(
             "Escribe tu mensaje:",
-            disabled=st.session_state.bloqueo_input,
+            disabled=st.session_state.block_input,
             accept_file=True,
             file_type=["txt", "pdf", "doc", "docx"]  # Solo documentos
         )
@@ -279,57 +332,59 @@ with input_area:
         if chat_data:
             # Texto
             if hasattr(chat_data, "text") and chat_data.text:
-                mensaje_usuario = chat_data.text
+                user_message = chat_data.text
 
             # Archivo
             if hasattr(chat_data, "files") and chat_data.files:
-                archivo = chat_data.files[0]
-                st.session_state.bloqueo_input = True
+                archive = chat_data.files[0]
+                st.session_state.block_input = True
 
-                tipo_mime, _ = mimetypes.guess_type(archivo.name)
+                tipo_mime, _ = mimetypes.guess_type(archive.name)
                 if tipo_mime == "text/plain":
-                    mensaje_usuario = archivo.read().decode("utf-8")
+                    user_message = archive.read().decode("utf-8")
                 else:
-                    mensaje_usuario = f"[Archivo cargado: {archivo.name}]"
+                    user_message = f"[Archivo cargado: {archive.name}]"
 
     # Columna derecha: expansor de archivos
     with col_files:
         with st.expander("📎 Subir documento"):
-            archivo_expander = st.file_uploader(
+            archive_expander = st.file_uploader(
                 "Selecciona un archivo",
                 type=["txt", "pdf", "doc", "docx"],
                 key=f"file_uploader_{st.session_state.uploader_key}_side_expander"
             )
 
-            if archivo_expander and not mensaje_usuario:
-                archivo = archivo_expander
-                st.session_state.bloqueo_input = True
+            if archive_expander and not user_message:
+                archivo = archive_expander
+                st.session_state.block_input = True
 
                 tipo_mime, _ = mimetypes.guess_type(archivo.name)
                 if tipo_mime == "text/plain":
-                    mensaje_usuario = archivo.read().decode("utf-8")
+                    user_message = archivo.read().decode("utf-8")
                 else:
-                    mensaje_usuario = f"[Archivo cargado: {archivo.name}]"
+                    user_message = f"[Archivo cargado: {archivo.name}]"
 
-# Respuesta de la IA
-if mensaje_usuario:
+### Respuesta de la IA
+if user_message:
 
-    st.session_state.mensajes.append(HumanMessage(content=mensaje_usuario))
+    st.session_state.mensajes.append(
+    HumanMessage(content=user_message, meta={"personalidad": personality}))
 
     with chat_area:
         placeholder = st.chat_message("assistant")
         placeholder.write("🐲 Drakonius está escribiendo...")
 
-
     respuesta = st.session_state.chat_model.invoke([
-        HumanMessage(content=aplicar_personalidad(mensaje_usuario))
+        HumanMessage(content=apply_personality(user_message))
     ])
 
     placeholder.empty()
+    
+    respuesta.meta = {"personalidad": personality}
     st.session_state.mensajes.append(respuesta)
 
     st.session_state.uploader_key += 1
-    st.session_state.archivo_procesado = False
-    st.session_state.bloqueo_input = False
+    st.session_state.processed_file = False
+    st.session_state.block_input = False
 
     st.rerun()
